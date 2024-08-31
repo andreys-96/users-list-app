@@ -26,14 +26,11 @@ export const fetchUsers = createAsyncThunk<IUser[], void>(
     });
 
 
-export const filterVisibleUsers = createAsyncThunk(
+export const filterVisibleUsers = createAsyncThunk<IUser[], { searchTerm: string, prop: string }>(
     'users/filterUsers',
-    async (searchTerm: string, { getState }) => {
+    async ({searchTerm, prop}, { getState }) => {
         const allUsers = (getState() as RootState).users.users;
-        const filteredUsers = filterUsers(allUsers, searchTerm);
-        if (filteredUsers.length === 0) {
-            return allUsers;
-        }
+        const filteredUsers = filterUsers(allUsers, searchTerm, prop);
         return filteredUsers;
     });
 

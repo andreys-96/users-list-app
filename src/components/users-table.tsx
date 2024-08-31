@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import './users-table.scss';
 import UserCard from './user-card';
 import { useSelector, } from 'react-redux'
@@ -7,6 +7,7 @@ import { selectVisibleUsers } from '../state/users.slice';
 import { IUser } from '../dto/user.interface';
 import { fetchUsers, filterVisibleUsers } from '../state/users.slice';
 import { useAppDispatch } from '../helpers';
+import { debounce } from 'lodash';
 
 const tableTitles = [
   'Name',
@@ -17,7 +18,12 @@ const tableTitles = [
 
 const UsersTable: React.FC = () => {
   const dispatch = useAppDispatch();
-  const users = useSelector(selectVisibleUsers)
+  const users = useSelector(selectVisibleUsers);
+  const dispatchSearch = useMemo(() => {
+    return debounce((searchTerm: string, prop: string) => {
+      dispatch(filterVisibleUsers({ searchTerm, prop }));
+    }, 300);
+  }, [dispatch]);
   useEffect(() => {
     dispatch(fetchUsers())
   }, [dispatch])
@@ -27,9 +33,9 @@ const UsersTable: React.FC = () => {
         <h2>Users Table</h2>
         <input
           type="text"
-          placeholder="Search..."
+          placeholder="Search... (All fields included)"
           onChange={(e) => {
-            dispatch(filterVisibleUsers(e.target.value))
+            dispatchSearch(e.target.value, 'all')
           }}
         />
       </div>
@@ -38,11 +44,23 @@ const UsersTable: React.FC = () => {
           {
             tableTitles.map((title) => {
               return (
-                <div className='users-table__header__title'>{title}</div>
+                <div className='users-table__header__title' key={title}>
+                  {title}
+                  <input
+                    type="text"
+                    placeholder={"Search " + title.toLowerCase() + "..."}
+                    onChange={(e) => {
+                      dispatchSearch(e.target.value, title)
+                    }}
+                  />
+                </div>
               )
             })
           }
         </div>
+        {
+          users.length === 0 && <div className='users-table__no-users'>No users found</div>
+        }
         {
           users.map((user: IUser) => {
             return (
