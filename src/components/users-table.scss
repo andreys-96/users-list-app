@@ -1,0 +1,28 @@
+.users-table {
+    display: block;
+    padding: var(--gap-md);
+    margin-inline: var(--gap-md);
+    border-radius: var(--border-radius-md);
+    &__header {
+        display: grid;
+        grid-template-columns: var(--table-grid-template);
+        justify-items: center;
+        font-size: larger;
+        font-weight: bold;
+        border-bottom: 1px solid var(--color-secondary);
+        padding-bottom: var(--gap-md);
+    }
+    border: 1px solid var(--color-secondary);
+}
+
+.header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-md);
+    margin-inline: var(--gap-md);
+    margin-block: var(--gap-md);
+    input {
+        height: 2rem;
+        font-size: large;
+    }
+}

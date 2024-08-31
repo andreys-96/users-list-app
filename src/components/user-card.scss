@@ -1,0 +1,5 @@
+.user-card {
+    display: grid;
+    grid-template-columns: var(--table-grid-template);
+    justify-items: center;
+}
